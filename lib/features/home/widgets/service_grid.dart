@@ -7,7 +7,7 @@ import '../../../app_localizations.dart';
 
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/utils/app_logger.dart';
-import '../../appointment/appointment_booking_screen.dart';
+import '../../appointment/appointment_booking_screen_v2.dart';
 
 /// Service model for home screen
 class ServiceItem {
@@ -232,13 +232,14 @@ class _ServiceCard extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AppointmentBookingScreen(
+          builder: (context) => AppointmentBookingScreenV2(
             service: {
               'id': service.route.split('/').last,
               'name': service.title,
               'description': 'Medical consultation service',
               'costPerService': 50.00,
             },
+            bookingType: 'service',
           ),
         ),
       );
@@ -350,4 +351,3 @@ class _ServiceCard extends StatelessWidget {
     );
   }
 }
-

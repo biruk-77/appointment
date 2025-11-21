@@ -64,6 +64,24 @@ class CustomerService {
     return response;
   }
 
+  /// Update the customer's password
+  Future<Map<String, dynamic>> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    AppLogger.user('Updating password');
+    final response = await _apiClient.put(
+      '/customers/password',
+      data: {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+        'confirmPassword': newPassword,
+      },
+    );
+    AppLogger.success('Password updated');
+    return response;
+  }
+
   // --- Admin Methods (if needed based on Postman) ---
 
   /// Get all customers (Admin only)

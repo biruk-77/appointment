@@ -1,4 +1,4 @@
-﻿// File: lib/features/home/widgets/home_header_new.dart
+// File: lib/features/home/widgets/home_header_new.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
@@ -12,6 +12,7 @@ import '../../../core/providers/auth_provider.dart';
 import '../../../core/models/auth/user_model.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../auth/register_screen.dart';
+import '../../profile/edit_profile_screen.dart';
 import '../../../core/animations/ethiopian_background_animations.dart'
     as EthiopianAnimations
     hide GradientRotation;
@@ -165,15 +166,11 @@ class _HomeHeaderNewState extends State<HomeHeaderNew>
                 child: Stack(
                   children: [
                     // Dynamic background painter
-                    CustomPaint(
-                      size: Size.fromHeight(420),
-                      painter: EthiopianAnimations.EthiopianGeometricPainter(
-                        _pulseController.value * math.pi * 2,
-                        themeProvider.accentColors['ethiopianGreen']!,
-                        themeProvider.accentColors['ethiopianYellow']!,
-                        themeProvider.accentColors['ethiopianRed']!,
-                        themeProvider.isDarkMode,
-                      ),
+                    EthiopianAnimations.CalmBackground(
+                      color1: themeProvider.accentColors['ethiopianGreen']!,
+                      color2: themeProvider.accentColors['ethiopianYellow']!,
+                      color3: themeProvider.accentColors['ethiopianRed']!,
+                      isDarkMode: themeProvider.isDarkMode,
                     ),
 
                     // Subtle gradient overlay for depth and readability
@@ -201,7 +198,12 @@ class _HomeHeaderNewState extends State<HomeHeaderNew>
                           padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
                           child: Column(
                             children: [
-                              _buildTopBar(user, themeProvider, colors, context),
+                              _buildTopBar(
+                                user,
+                                themeProvider,
+                                colors,
+                                context,
+                              ),
                               const SizedBox(height: 20),
                               _buildMainBranding(user, theme, colors, context),
                               const Spacer(),
@@ -253,10 +255,10 @@ class _HomeHeaderNewState extends State<HomeHeaderNew>
               children: [
                 // We don't have "Welcome" in keys yet, adding generic fallback or key
                 // Assuming 'Hello World' or adding a key. Using "Welcome {name}" logic manually here
-                // Since we used "welcome": "Welcome {name}" in your first prompt, 
+                // Since we used "welcome": "Welcome {name}" in your first prompt,
                 // but the ARB you provided earlier didn't have a generic 'Welcome'.
                 // Using hardcoded for now or generic if available.
-                // Let's use "Welcome," hardcoded or add key. 
+                // Let's use "Welcome," hardcoded or add key.
                 // I will use a hardcoded safe string or look for nearest key.
                 // Actually, let's just stick to English for "Welcome," unless you add a key.
                 // WAIT! I see "welcome" in your FIRST prompt but not in the GENERATED file you showed later.
@@ -280,7 +282,13 @@ class _HomeHeaderNewState extends State<HomeHeaderNew>
             ),
           ],
         ),
-        _buildThemeToggle(themeProvider, colors),
+        Row(
+          children: [
+            _buildEditProfileButton(context, colors),
+            const SizedBox(width: 8),
+            _buildThemeToggle(themeProvider, colors),
+          ],
+        ),
       ],
     );
   }
@@ -297,21 +305,11 @@ class _HomeHeaderNewState extends State<HomeHeaderNew>
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              l10n.appTitle, // LOCALIZED "Go Hospital"
-              style: theme.textTheme.displaySmall?.copyWith(
-                color: colors.primary,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 6,
-                fontSize: 40,
-                shadows: [
-                  Shadow(
-                    color: colors.shadow.withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
+            Image.asset(
+              'assets/logo.png',
+              height: 80,
+              width: 80,
+              fit: BoxFit.contain,
             ),
             const SizedBox(height: 8),
             // App description
@@ -363,17 +361,7 @@ class _HomeHeaderNewState extends State<HomeHeaderNew>
             'icon': Icons.shopping_bag_outlined,
             'label': l10n.navOrders, // LOCALIZED
             'key': 'Orders', // Internal key for logic
-            'color': themeProvider.colorScheme.secondary,
-          },
-          {
-            'icon': isLoggedIn ? Icons.logout : Icons.login,
-            'label': isLoggedIn
-                ? l10n.logout
-                : l10n.login, // LOCALIZED
-            'key': isLoggedIn ? 'Logout' : 'Login', // Internal key for logic
-            'color': isLoggedIn
-                ? themeProvider.colorScheme.error
-                : themeProvider.colorScheme.primary,
+            'color': themeProvider.colorScheme.primary,
           },
         ];
 
@@ -434,6 +422,42 @@ class _HomeHeaderNewState extends State<HomeHeaderNew>
   }
 
   // --- Helper Widgets for Buttons ---
+
+  Widget _buildEditProfileButton(BuildContext context, ColorScheme colors) {
+    return Material(
+      color: colors.surface.withOpacity(0.2),
+      shape: const CircleBorder(),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+          );
+        },
+        customBorder: const CircleBorder(),
+        child: ClipOval(
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: colors.onSurface.withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+              child: Icon(
+                Icons.edit_outlined,
+                color: colors.onSurface,
+                size: 22,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _buildThemeToggle(ThemeProvider themeProvider, ColorScheme colors) {
     return Material(
@@ -498,14 +522,7 @@ class _HomeHeaderNewState extends State<HomeHeaderNew>
               backgroundColor: colors.primary.withOpacity(0.1),
               backgroundImage: user?.profileImageUrl != null
                   ? NetworkImage(user!.profileImageUrl!)
-                  : null,
-              child: user?.profileImageUrl == null
-                  ? Icon(
-                      Icons.person_outline,
-                      color: colors.onSurface,
-                      size: 20,
-                    )
-                  : null,
+                  : AssetImage('assets/logo.png') as ImageProvider,
             ),
           ),
         );

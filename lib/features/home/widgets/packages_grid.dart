@@ -7,7 +7,7 @@ import '../../../app_localizations.dart';
 
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/utils/app_logger.dart';
-import '../../appointment/appointment_booking_screen.dart';
+import '../../appointment/appointment_booking_screen_v2.dart';
 
 /// Beautiful packages grid widget
 /// Displays health packages with enhanced UI and animations
@@ -30,65 +30,66 @@ class PackagesGrid extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header with icon
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: themeProvider.accentColors['medical']!.withOpacity(
-                        0.2,
+        return SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header with icon
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: themeProvider.accentColors['medical']!
+                            .withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      borderRadius: BorderRadius.circular(12),
+                      child: Icon(
+                        Icons.card_giftcard,
+                        color: themeProvider.accentColors['medical'],
+                        size: 24,
+                      ),
                     ),
-                    child: Icon(
-                      Icons.card_giftcard,
-                      color: themeProvider.accentColors['medical'],
-                      size: 24,
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.healthPackages, // LOCALIZED
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: colors.onSurface,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          l10n.healthPackagesSubtitle, // LOCALIZED
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: colors.onSurface.withOpacity(0.6),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.healthPackages, // LOCALIZED
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: colors.onSurface,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        l10n.healthPackagesSubtitle, // LOCALIZED
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: colors.onSurface.withOpacity(0.6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              // Packages list
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: packages.length,
-                itemBuilder: (context, index) {
-                  final package = packages[index];
-                  return _PackageCard(
-                    package: package,
-                    themeProvider: themeProvider,
-                    index: index,
-                  );
-                },
-              ),
-            ],
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // Packages list
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: packages.length,
+                  itemBuilder: (context, index) {
+                    final package = packages[index];
+                    return _PackageCard(
+                      package: package,
+                      themeProvider: themeProvider,
+                      index: index,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -173,8 +174,10 @@ class _PackageCardState extends State<_PackageCard>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  AppointmentBookingScreen(service: widget.package),
+              builder: (context) => AppointmentBookingScreenV2(
+                package: widget.package,
+                bookingType: 'package',
+              ),
             ),
           );
         },
@@ -214,8 +217,10 @@ class _PackageCardState extends State<_PackageCard>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        AppointmentBookingScreen(service: widget.package),
+                    builder: (context) => AppointmentBookingScreenV2(
+                      package: widget.package,
+                      bookingType: 'package',
+                    ),
                   ),
                 );
               },
@@ -361,8 +366,9 @@ class _PackageCardState extends State<_PackageCard>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AppointmentBookingScreen(
-                                service: widget.package,
+                              builder: (context) => AppointmentBookingScreenV2(
+                                package: widget.package,
+                                bookingType: 'package',
                               ),
                             ),
                           );
@@ -395,4 +401,3 @@ class _PackageCardState extends State<_PackageCard>
     );
   }
 }
-

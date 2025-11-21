@@ -1,53 +1,50 @@
-﻿// File: lib/features/orders/order_detail_screen.dart
+// File: lib/features/orders/order_detail_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../app_localizations.dart';
 import '../../core/providers/theme_provider.dart';
-import '../../core/providers/api_provider.dart';
-import '../../core/utils/app_logger.dart';
 import '../../core/utils/payment_formatter.dart';
 
 class OrderDetailScreen extends StatefulWidget {
-  final String orderId;
+  final Map<String, dynamic> orderData;
 
-  const OrderDetailScreen({super.key, required this.orderId});
+  const OrderDetailScreen({super.key, required this.orderData});
 
   @override
   State<OrderDetailScreen> createState() => _OrderDetailScreenState();
 }
 
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
-  bool _isLoading = true;
-  Map<String, dynamic>? _orderData;
-  String? _errorMessage;
+  late Map<String, dynamic> _orderData;
 
   @override
   void initState() {
     super.initState();
-    _fetchOrderDetails();
+    _orderData = widget.orderData;
   }
 
-  Future<void> _fetchOrderDetails() async {
+  String _getRelativeDate(String createdAtString) {
     try {
-      final apiProvider = Provider.of<ApiProvider>(context, listen: false);
-      // Fetch specific order details
-      final response = await apiProvider.orders.getOrderById(widget.orderId);
-      
-      if (mounted) {
-        setState(() {
-          _orderData = response['data'];
-          _isLoading = false;
-        });
+      final createdAt = DateTime.parse(createdAtString);
+      final now = DateTime.now();
+      final difference = now.difference(createdAt);
+
+      if (difference.inDays == 0) {
+        return 'Today';
+      } else if (difference.inDays == 1) {
+        return '1 day ago';
+      } else if (difference.inDays < 7) {
+        return '${difference.inDays} days ago';
+      } else if (difference.inDays < 30) {
+        final weeks = (difference.inDays / 7).floor();
+        return '$weeks week${weeks > 1 ? 's' : ''} ago';
+      } else {
+        final months = (difference.inDays / 30).floor();
+        return '$months month${months > 1 ? 's' : ''} ago';
       }
     } catch (e) {
-      AppLogger.error('Failed to load order details', error: e);
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
-      }
+      return 'N/A';
     }
   }
 
@@ -64,47 +61,30 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         foregroundColor: colors.onSurface,
         elevation: 0,
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator(color: colors.primary))
-          : _errorMessage != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error_outline, size: 48, color: colors.error),
-                      const SizedBox(height: 16),
-                      Text(_errorMessage!),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _isLoading = true;
-                            _errorMessage = null;
-                          });
-                          _fetchOrderDetails();
-                        },
-                        child: Text(l10n.retry),
-                      ),
-                    ],
-                  ),
-                )
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildStatusCard(l10n, colors),
-                      const SizedBox(height: 20),
-                      _buildInfoSection(l10n, colors),
-                      const SizedBox(height: 20),
-                      _buildTotalSection(l10n, colors),
-                    ],
-                  ),
-                ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildStatusCard(l10n, colors),
+            const SizedBox(height: 20),
+            _buildInfoSection(l10n, colors),
+            const SizedBox(height: 20),
+            _buildServiceSection(l10n, colors),
+            const SizedBox(height: 20),
+            _buildDateSection(l10n, colors),
+            if (_orderData['file'] != null) ...[
+              const SizedBox(height: 20),
+              _buildFileSection(l10n, colors),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildStatusCard(AppLocalizations l10n, ColorScheme colors) {
-    final status = _orderData?['status'] ?? 'Unknown';
+    final status = _orderData['status'] ?? 'pending';
     final color = PaymentFormatter.getStatusColor(status);
 
     return Container(
@@ -123,7 +103,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            status.toString().toUpperCase(),
+            (status.isEmpty ? 'pending' : status).toUpperCase(),
             style: TextStyle(
               color: color,
               fontWeight: FontWeight.bold,
@@ -143,20 +123,18 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildInfoRow(l10n.orderNumber(widget.orderId), '#${widget.orderId}', colors),
+            _buildInfoRow(
+              l10n.orderNumber(_orderData['id']),
+              '#${_orderData['id']}',
+              colors,
+              Icons.confirmation_number,
+            ),
             const Divider(),
             _buildInfoRow(
-              l10n.orderDate, 
-              _orderData?['createdAt'] != null 
-                ? PaymentFormatter.formatDate(DateTime.parse(_orderData!['createdAt']))
-                : 'N/A',
-              colors
-            ),
-             const Divider(),
-            _buildInfoRow(
-              "Description", 
-              _orderData?['description'] ?? 'N/A', 
-              colors
+              l10n.description,
+              _orderData['description'] ?? 'N/A',
+              colors,
+              Icons.description,
             ),
           ],
         ),
@@ -164,41 +142,169 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, ColorScheme colors) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(color: colors.onSurface.withOpacity(0.6))),
-          Text(value, style: TextStyle(fontWeight: FontWeight.bold, color: colors.onSurface)),
-        ],
+  Widget _buildServiceSection(AppLocalizations l10n, ColorScheme colors) {
+    final service = _orderData['service'] as Map<String, dynamic>? ?? {};
+    final serviceDesc = service['description'] as String? ?? 'N/A';
+    final dateCount = _orderData['dateCount'] ?? 1;
+
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.serviceInformation,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colors.onSurface,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildInfoRow(
+              'Service',
+              serviceDesc,
+              colors,
+              Icons.medical_services,
+            ),
+            const SizedBox(height: 12),
+            _buildInfoRow(
+              l10n.duration,
+              '$dateCount day${dateCount > 1 ? 's' : ''}',
+              colors,
+              Icons.calendar_today,
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildTotalSection(AppLocalizations l10n, ColorScheme colors) {
-    final amount = double.tryParse(_orderData?['amount']?.toString() ?? '0') ?? 0.0;
-    
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: colors.primary,
-        borderRadius: BorderRadius.circular(16),
+  Widget _buildDateSection(AppLocalizations l10n, ColorScheme colors) {
+    final date = _orderData['date'] as String? ?? 'N/A';
+    final createdAt = _orderData['createdAt'] as String? ?? '';
+    final relativeDate = createdAt.isNotEmpty
+        ? _getRelativeDate(createdAt)
+        : 'N/A';
+
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildInfoRow('Service Date', date, colors, Icons.event),
+            const SizedBox(height: 12),
+            _buildInfoRow(
+              l10n.created,
+              relativeDate,
+              colors,
+              Icons.access_time,
+            ),
+          ],
+        ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            l10n.totalAmount,
-            style: const TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          Text(
-            PaymentFormatter.formatCurrency(amount),
-            style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-        ],
+    );
+  }
+
+  Widget _buildFileSection(AppLocalizations l10n, ColorScheme colors) {
+    final fileUrl = _orderData['fileUrl'] as String?;
+    final fileName = _orderData['file'] as String? ?? 'Attachment';
+
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Attachment',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colors.onSurface,
+              ),
+            ),
+            const SizedBox(height: 12),
+            if (fileUrl != null)
+              InkWell(
+                onTap: () {
+                  // Can add image viewer here
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: colors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: colors.primary.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.image, color: colors.primary),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          fileName.split('/').last,
+                          style: TextStyle(
+                            color: colors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Icon(Icons.open_in_new, color: colors.primary, size: 18),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildInfoRow(
+    String label,
+    String value,
+    ColorScheme colors,
+    IconData icon,
+  ) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20, color: colors.primary.withOpacity(0.7)),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: colors.onSurface.withOpacity(0.6),
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: colors.onSurface,
+                  fontSize: 14,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

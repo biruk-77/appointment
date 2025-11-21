@@ -1,4 +1,4 @@
-﻿// File: lib/features/appointment/appointment_booking_screen.dart
+// File: lib/features/appointment/appointment_booking_screen.dart
 // Project Path: C:\Users\biruk\Desktop\absiniya\appointment
 // Auto-Header: you feel me
 // ----------------------------------------------
@@ -15,8 +15,9 @@ import '../payment/payment_screen.dart';
 /// Simple appointment booking screen using real backend
 class AppointmentBookingScreen extends StatefulWidget {
   final Map<String, dynamic>? service;
+  final Map<String, dynamic>? package;
 
-  const AppointmentBookingScreen({super.key, this.service});
+  const AppointmentBookingScreen({super.key, this.service, this.package});
 
   @override
   State<AppointmentBookingScreen> createState() =>
@@ -26,26 +27,33 @@ class AppointmentBookingScreen extends StatefulWidget {
 class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   final _formKey = GlobalKey<FormState>();
   final _hospitalController = TextEditingController();
+  final _descriptionController = TextEditingController();
 
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   File? _selectedFile;
   bool _isLoading = false;
   String? _errorMessage;
+  int _dateCount = 1;
 
   @override
   void initState() {
     super.initState();
-    // Pre-fill hospital if service is provided
+    // Pre-fill based on service or package
     if (widget.service != null) {
       _hospitalController.text =
           widget.service!['description'] ?? 'Medical Service';
+    } else if (widget.package != null) {
+      _hospitalController.text = widget.package!['name'] ?? 'Health Package';
+      _descriptionController.text =
+          widget.package!['detail']?['description'] ?? '';
     }
   }
 
   @override
   void dispose() {
     _hospitalController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -68,6 +76,12 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     final time = await showTimePicker(
       context: context,
       initialTime: const TimeOfDay(hour: 9, minute: 0),
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },
     );
 
     if (time != null) {
@@ -81,7 +95,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
+        allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'png', 'png'],
       );
 
       if (result != null && result.files.single.path != null) {
@@ -136,35 +150,65 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         _selectedTime!.minute,
       );
 
-      AppLogger.api('ðŸ“… Creating order for ${dateTime.toIso8601String()}');
+      AppLogger.api('📅 Creating order for ${dateTime.toIso8601String()}');
 
       // Create order using real backend (not appointment)
-      await apiProvider.orders.createOrder(
+      final orderResponse = await apiProvider.orders.createOrder(
         serviceId: 1, // Default service ID
         customerId: int.tryParse(authProvider.user?.id.toString() ?? '1') ?? 1,
-        description: _hospitalController.text,
+        description: _descriptionController.text.isNotEmpty
+            ? _descriptionController.text
+            : _hospitalController.text,
         date: _selectedDate?.toIso8601String().split(
           'T',
         )[0], // Format: "2025-11-20"
-        dateCount: 1, // Default to 1 day
+        dateCount: _dateCount, // Use selected date count
         file: _selectedFile, // Optional file upload
       );
 
-      AppLogger.success('âœ… Order created successfully');
+      AppLogger.success('✅ Order created successfully');
+
+      // Extract order ID from response - IMPORTANT: data.id is the actual order ID
+      final orderId = orderResponse['data']?['id'];
+
+      if (orderId == null) {
+        throw Exception('Order created but no ID returned from API');
+      }
+
+      // Calculate total amount based on service or package
+      double costPerService = 50.0;
+
+      if (widget.service != null) {
+        // For services: multiply costPerService by dateCount
+        costPerService =
+            double.tryParse(
+              widget.service!['costPerService']?.toString() ?? '50.0',
+            ) ??
+            50.0;
+      } else if (widget.package != null) {
+        // For packages: use the package price directly (no multiplication)
+        costPerService =
+            double.tryParse(widget.package!['price']?.toString() ?? '50.0') ??
+            50.0;
+      }
+
+      final orderAmount = widget.service != null
+          ? costPerService *
+                _dateCount // Services: multiply by days
+          : costPerService; // Packages: use price as-is
+
+      AppLogger.info(
+        '📦 Order ID: $orderId, Cost: $costPerService, Days: $_dateCount, Total Amount: $orderAmount',
+      );
 
       if (mounted) {
-        // Navigate to payment screen
+        // Navigate to payment screen with actual order ID
         final paymentResult = await Navigator.push<bool>(
           context,
           MaterialPageRoute(
             builder: (context) => PaymentScreen(
-              orderId:
-                  int.tryParse(widget.service?['id']?.toString() ?? '1') ?? 1,
-              amount:
-                  double.tryParse(
-                    widget.service?['costPerService']?.toString() ?? '50.0',
-                  ) ??
-                  50.0,
+              orderId: orderId as int,
+              amount: orderAmount,
               orderDescription: _hospitalController.text,
             ),
           ),
@@ -176,7 +220,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         }
       }
     } catch (e) {
-      AppLogger.error('âŒ Failed to create appointment', error: e);
+      AppLogger.error('❌ Failed to create appointment', error: e);
       setState(() {
         _errorMessage = 'Failed to book appointment: ${e.toString()}';
       });
@@ -185,6 +229,14 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         _isLoading = false;
       });
     }
+  }
+
+  String _format12Hour(TimeOfDay time) {
+    final hour = time.hour;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = hour >= 12 ? 'PM' : 'AM';
+    final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+    return '$displayHour:$minute $period';
   }
 
   @override
@@ -237,12 +289,59 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                       ),
                       if (widget.service!['costPerService'] != null)
                         Text(
-                          'Cost: ETB ${widget.service!['costPerService']}',
+                          'Cost: ETB ${widget.service!['costPerService']}/day',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: const Color(0xFF2C5F7A),
                           ),
                         ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+
+              // Package info if provided
+              if (widget.package != null) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5B041).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFF5B041)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Selected Package',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF2C5F7A),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.package!['name'] ?? 'Health Package',
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.package!['detail']?['description'] ?? '',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Price: ETB ${widget.package!['price']}',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF2C5F7A),
+                          fontSize: 16,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -270,6 +369,66 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 24),
+
+              // Description field
+              Text(
+                'Description (Optional)',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _descriptionController,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  hintText: 'Enter appointment description or notes',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.description),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Date count field
+              Text(
+                'Duration (Days)',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: theme.colorScheme.outline),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: DropdownButton<int>(
+                        value: _dateCount,
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                        items: List.generate(30, (i) => i + 1)
+                            .map(
+                              (day) => DropdownMenuItem(
+                                value: day,
+                                child: Text('$day day${day > 1 ? 's' : ''}'),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() => _dateCount = value);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
 
@@ -333,7 +492,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                       const SizedBox(width: 12),
                       Text(
                         _selectedTime != null
-                            ? _selectedTime!.format(context)
+                            ? _format12Hour(_selectedTime!)
                             : 'Select appointment time',
                         style: TextStyle(
                           color: _selectedTime != null
@@ -488,8 +647,3 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     );
   }
 }
-
-
-
-
-

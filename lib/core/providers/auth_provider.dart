@@ -498,6 +498,92 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Update customer profile
+  Future<bool> updateProfile({
+    required String name,
+    required String phone,
+    required String address,
+  }) async {
+    _setLoading(true);
+    _clearError();
+
+    try {
+      AppLogger.auth('📝 Updating profile...');
+
+      final response = await _apiProvider.customers.updateProfile(
+        name: name,
+        phone: phone,
+        address: address,
+      );
+
+      if (response['success'] == true) {
+        // Update local user data
+        if (_user != null) {
+          _user = UserModel(
+            id: _user!.id,
+            email: _user!.email,
+            phone: phone,
+            firstName: name.split(' ').first,
+            lastName: name.split(' ').length > 1
+                ? name.split(' ').sublist(1).join(' ')
+                : '',
+            role: _user!.role,
+            status: _user!.status,
+            verificationStatus: _user!.verificationStatus,
+            createdAt: _user!.createdAt,
+            address: address,
+          );
+          await _storeUserData(_user!);
+        }
+        AppLogger.success('✅ Profile updated successfully');
+        _setLoading(false);
+        return true;
+      } else {
+        _setError(response['message'] ?? 'Failed to update profile');
+        _setLoading(false);
+        return false;
+      }
+    } catch (e) {
+      AppLogger.error('❌ Profile update failed', error: e);
+      _setError(e.toString());
+      _setLoading(false);
+      return false;
+    }
+  }
+
+  /// Update customer password
+  Future<bool> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    _setLoading(true);
+    _clearError();
+
+    try {
+      AppLogger.auth('🔐 Updating password...');
+
+      final response = await _apiProvider.customers.updatePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      );
+
+      if (response['success'] == true) {
+        AppLogger.success('✅ Password updated successfully');
+        _setLoading(false);
+        return true;
+      } else {
+        _setError(response['message'] ?? 'Failed to update password');
+        _setLoading(false);
+        return false;
+      }
+    } catch (e) {
+      AppLogger.error('❌ Password update failed', error: e);
+      _setError(e.toString());
+      _setLoading(false);
+      return false;
+    }
+  }
+
   /// Private helper methods
 
   void _setState(AuthState newState) {

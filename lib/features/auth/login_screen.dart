@@ -7,6 +7,7 @@ import '../../core/providers/auth_provider.dart';
 import '../../core/providers/theme_provider.dart';
 import '../../core/providers/language_provider.dart';
 import '../../core/utils/app_logger.dart';
+import '../../app_localizations.dart';
 import '../../core/animations/ethiopian_background_animations.dart'
     as EthiopianAnimations
     hide GradientRotation;
@@ -120,14 +121,16 @@ class _LoginScreenState extends State<LoginScreen>
       context,
       listen: false,
     );
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Choose Language'),
+        title: Text(l10n.chooseLanguage),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
+              leading: const Text('🇺🇸', style: TextStyle(fontSize: 24)),
               title: const Text('English'),
               onTap: () {
                 languageProvider.setLanguage('en');
@@ -135,9 +138,18 @@ class _LoginScreenState extends State<LoginScreen>
               },
             ),
             ListTile(
-              title: const Text('አማርኛ (Amharic)'),
+              leading: const Text('🇪🇹', style: TextStyle(fontSize: 24)),
+              title: const Text('አማርኛ'),
               onTap: () {
                 languageProvider.setLanguage('am');
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+            ListTile(
+              leading: const Text('🇸🇴', style: TextStyle(fontSize: 24)),
+              title: const Text('Soomaali'),
+              onTap: () {
+                languageProvider.setLanguage('so');
                 Navigator.of(dialogContext).pop();
               },
             ),
@@ -153,6 +165,7 @@ class _LoginScreenState extends State<LoginScreen>
       builder: (context, themeProvider, child) {
         final theme = themeProvider.themeData;
         final colorScheme = themeProvider.colorScheme;
+        final l10n = AppLocalizations.of(context)!;
 
         return Scaffold(
           body: AnimatedBuilder(
@@ -172,15 +185,11 @@ class _LoginScreenState extends State<LoginScreen>
                 child: Stack(
                   children: [
                     // Animated background
-                    CustomPaint(
-                      size: Size.infinite,
-                      painter: EthiopianAnimations.EthiopianGeometricPainter(
-                        _backgroundController.value * math.pi * 2,
-                        colorScheme.primary,
-                        colorScheme.secondary,
-                        colorScheme.tertiary,
-                        themeProvider.isDarkMode,
-                      ),
+                    EthiopianAnimations.CalmBackground(
+                      color1: colorScheme.primary,
+                      color2: colorScheme.secondary,
+                      color3: colorScheme.tertiary,
+                      isDarkMode: themeProvider.isDarkMode,
                     ),
                     // Content
                     SafeArea(
@@ -209,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen>
                                               : Icons.dark_mode_outlined,
                                           color: colorScheme.primary,
                                         ),
-                                        tooltip: 'Toggle Theme',
+                                        tooltip: l10n.theme,
                                       ),
                                       // Language Toggle Button
                                       IconButton(
@@ -220,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen>
                                           Icons.language_outlined,
                                           color: colorScheme.primary,
                                         ),
-                                        tooltip: 'Change Language',
+                                        tooltip: l10n.changeLanguage,
                                       ),
                                     ],
                                   ),
@@ -258,34 +267,14 @@ class _LoginScreenState extends State<LoginScreen>
                                       ),
                                       child: Column(
                                         children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(16),
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  colorScheme.primary,
-                                                  colorScheme.secondary,
-                                                ],
-                                              ),
-                                              shape: BoxShape.circle,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: colorScheme.primary
-                                                      .withOpacity(0.3),
-                                                  blurRadius: 12,
-                                                  offset: const Offset(0, 6),
-                                                ),
-                                              ],
-                                            ),
-                                            child: const Icon(
-                                              Icons.health_and_safety,
-                                              color: Colors.white,
-                                              size: 40,
-                                            ),
+                                          Image.asset(
+                                            'assets/full.png',
+                                            height: 140,
+                                            fit: BoxFit.contain,
                                           ),
                                           const SizedBox(height: 16),
                                           Text(
-                                            'Go Hospital',
+                                            l10n.welcomeBack,
                                             style: theme.textTheme.headlineLarge
                                                 ?.copyWith(
                                                   fontWeight: FontWeight.bold,
@@ -295,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen>
                                           ),
                                           const SizedBox(height: 8),
                                           Text(
-                                            'Healthcare Appointment System',
+                                            l10n.signInToAccount,
                                             style: theme.textTheme.bodyMedium
                                                 ?.copyWith(
                                                   color: colorScheme.onSurface
@@ -345,7 +334,7 @@ class _LoginScreenState extends State<LoginScreen>
                                               CrossAxisAlignment.stretch,
                                           children: [
                                             Text(
-                                              'Welcome Back',
+                                              l10n.welcomeBack,
                                               style: theme
                                                   .textTheme
                                                   .headlineSmall
@@ -357,7 +346,7 @@ class _LoginScreenState extends State<LoginScreen>
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
-                                              'Sign in to your account',
+                                              l10n.signInToAccount,
                                               style: theme.textTheme.bodyMedium
                                                   ?.copyWith(
                                                     color: colorScheme.onSurface
@@ -372,7 +361,7 @@ class _LoginScreenState extends State<LoginScreen>
                                               keyboardType:
                                                   TextInputType.emailAddress,
                                               decoration: InputDecoration(
-                                                labelText: 'Email Address',
+                                                labelText: l10n.emailAddress,
                                                 prefixIcon: Icon(
                                                   Icons.email_outlined,
                                                   color: colorScheme.primary,
@@ -413,12 +402,12 @@ class _LoginScreenState extends State<LoginScreen>
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
-                                                  return 'Please enter your email';
+                                                  return l10n.required;
                                                 }
                                                 if (!RegExp(
                                                   r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                                                 ).hasMatch(value)) {
-                                                  return 'Please enter a valid email';
+                                                  return l10n.invalidEmail;
                                                 }
                                                 return null;
                                               },
@@ -429,7 +418,7 @@ class _LoginScreenState extends State<LoginScreen>
                                               controller: _passwordController,
                                               obscureText: _obscurePassword,
                                               decoration: InputDecoration(
-                                                labelText: 'Password',
+                                                labelText: l10n.password,
                                                 prefixIcon: Icon(
                                                   Icons.lock_outline,
                                                   color: colorScheme.primary,
@@ -484,10 +473,10 @@ class _LoginScreenState extends State<LoginScreen>
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
-                                                  return 'Please enter your password';
+                                                  return l10n.required;
                                                 }
                                                 if (value.length < 6) {
-                                                  return 'Password must be at least 6 characters';
+                                                  return l10n.passwordTooShort;
                                                 }
                                                 return null;
                                               },
@@ -556,9 +545,9 @@ class _LoginScreenState extends State<LoginScreen>
                                                               ),
                                                         ),
                                                       )
-                                                    : const Text(
-                                                        'Sign In',
-                                                        style: TextStyle(
+                                                    : Text(
+                                                        l10n.signIn,
+                                                        style: const TextStyle(
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -573,7 +562,7 @@ class _LoginScreenState extends State<LoginScreen>
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  'Don\'t have an account? ',
+                                                  l10n.dontHaveAccountQuestion,
                                                   style: theme
                                                       .textTheme
                                                       .bodyMedium
@@ -592,7 +581,7 @@ class _LoginScreenState extends State<LoginScreen>
                                                     );
                                                   },
                                                   child: Text(
-                                                    'Create Account',
+                                                    l10n.signUp,
                                                     style: theme
                                                         .textTheme
                                                         .bodyMedium
@@ -629,4 +618,3 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 }
-

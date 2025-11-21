@@ -7,6 +7,7 @@ import '../../core/providers/auth_provider.dart';
 import '../../core/providers/theme_provider.dart';
 import '../../core/providers/language_provider.dart';
 import '../../core/utils/app_logger.dart';
+import '../../app_localizations.dart';
 import '../../core/animations/ethiopian_background_animations.dart'
     as EthiopianAnimations
     hide GradientRotation;
@@ -137,14 +138,16 @@ class _RegisterScreenState extends State<RegisterScreen>
       context,
       listen: false,
     );
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Choose Language'),
+        title: Text(l10n.chooseLanguage),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
+              leading: const Text('🇺🇸', style: TextStyle(fontSize: 24)),
               title: const Text('English'),
               onTap: () {
                 languageProvider.setLanguage('en');
@@ -152,9 +155,18 @@ class _RegisterScreenState extends State<RegisterScreen>
               },
             ),
             ListTile(
-              title: const Text('አማርኛ (Amharic)'),
+              leading: const Text('🇪🇹', style: TextStyle(fontSize: 24)),
+              title: const Text('አማርኛ'),
               onTap: () {
                 languageProvider.setLanguage('am');
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+            ListTile(
+              leading: const Text('🇸🇴', style: TextStyle(fontSize: 24)),
+              title: const Text('Soomaali'),
+              onTap: () {
+                languageProvider.setLanguage('so');
                 Navigator.of(dialogContext).pop();
               },
             ),
@@ -170,6 +182,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       builder: (context, themeProvider, child) {
         final theme = themeProvider.themeData;
         final colorScheme = themeProvider.colorScheme;
+        final l10n = AppLocalizations.of(context)!;
 
         return Scaffold(
           body: AnimatedBuilder(
@@ -189,15 +202,11 @@ class _RegisterScreenState extends State<RegisterScreen>
                 child: Stack(
                   children: [
                     // Animated background
-                    CustomPaint(
-                      size: Size.infinite,
-                      painter: EthiopianAnimations.EthiopianGeometricPainter(
-                        _backgroundController.value * math.pi * 2,
-                        colorScheme.primary,
-                        colorScheme.secondary,
-                        colorScheme.tertiary,
-                        themeProvider.isDarkMode,
-                      ),
+                    EthiopianAnimations.CalmBackground(
+                      color1: colorScheme.primary,
+                      color2: colorScheme.secondary,
+                      color3: colorScheme.tertiary,
+                      isDarkMode: themeProvider.isDarkMode,
                     ),
                     // Content
                     SafeArea(
@@ -226,7 +235,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               : Icons.dark_mode_outlined,
                                           color: colorScheme.primary,
                                         ),
-                                        tooltip: 'Toggle Theme',
+                                        tooltip: l10n.theme,
                                       ),
                                       // Language Toggle Button
                                       IconButton(
@@ -237,7 +246,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                           Icons.language_outlined,
                                           color: colorScheme.primary,
                                         ),
-                                        tooltip: 'Change Language',
+                                        tooltip: l10n.changeLanguage,
                                       ),
                                     ],
                                   ),
@@ -302,7 +311,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                           ),
                                           const SizedBox(height: 16),
                                           Text(
-                                            'Go Hospital',
+                                            l10n.appTitle,
                                             style: theme.textTheme.headlineLarge
                                                 ?.copyWith(
                                                   fontWeight: FontWeight.bold,
@@ -312,7 +321,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                           ),
                                           const SizedBox(height: 8),
                                           Text(
-                                            'Healthcare Appointment System',
+                                            l10n.appSubtitle,
                                             style: theme.textTheme.bodyMedium
                                                 ?.copyWith(
                                                   color: colorScheme.onSurface
@@ -362,7 +371,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               CrossAxisAlignment.stretch,
                                           children: [
                                             Text(
-                                              'Create Account',
+                                              l10n.createAccountTitle,
                                               style: theme
                                                   .textTheme
                                                   .headlineSmall
@@ -374,7 +383,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
-                                              'Join Go Hospital today',
+                                              l10n.joinGoHospital,
                                               style: theme.textTheme.bodyMedium
                                                   ?.copyWith(
                                                     color: colorScheme.onSurface
@@ -388,7 +397,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               controller: _nameController,
                                               keyboardType: TextInputType.name,
                                               decoration: InputDecoration(
-                                                labelText: 'Full Name',
+                                                labelText: l10n.fullName,
                                                 prefixIcon: Icon(
                                                   Icons.person_outline,
                                                   color: colorScheme.primary,
@@ -429,7 +438,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
-                                                  return 'Please enter your full name';
+                                                  return l10n.required;
                                                 }
                                                 if (value.length < 3) {
                                                   return 'Name must be at least 3 characters';
@@ -444,7 +453,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               keyboardType:
                                                   TextInputType.emailAddress,
                                               decoration: InputDecoration(
-                                                labelText: 'Email Address',
+                                                labelText: l10n.emailAddress,
                                                 prefixIcon: Icon(
                                                   Icons.email_outlined,
                                                   color: colorScheme.primary,
@@ -485,12 +494,12 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
-                                                  return 'Please enter your email';
+                                                  return l10n.required;
                                                 }
                                                 if (!RegExp(
                                                   r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                                                 ).hasMatch(value)) {
-                                                  return 'Please enter a valid email';
+                                                  return l10n.invalidEmail;
                                                 }
                                                 return null;
                                               },
@@ -501,7 +510,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               controller: _phoneController,
                                               keyboardType: TextInputType.phone,
                                               decoration: InputDecoration(
-                                                labelText: 'Phone Number',
+                                                labelText: l10n.phoneNumber,
                                                 prefixIcon: Icon(
                                                   Icons.phone_outlined,
                                                   color: colorScheme.primary,
@@ -542,7 +551,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
-                                                  return 'Please enter your phone number';
+                                                  return l10n.required;
                                                 }
                                                 if (value.length < 9) {
                                                   return 'Please enter a valid phone number';
@@ -556,7 +565,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               controller: _passwordController,
                                               obscureText: _obscurePassword,
                                               decoration: InputDecoration(
-                                                labelText: 'Password',
+                                                labelText: l10n.password,
                                                 prefixIcon: Icon(
                                                   Icons.lock_outline,
                                                   color: colorScheme.primary,
@@ -611,10 +620,10 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
-                                                  return 'Please enter a password';
+                                                  return l10n.required;
                                                 }
                                                 if (value.length < 6) {
-                                                  return 'Password must be at least 6 characters';
+                                                  return l10n.passwordTooShort;
                                                 }
                                                 return null;
                                               },
@@ -627,7 +636,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               obscureText:
                                                   _obscureConfirmPassword,
                                               decoration: InputDecoration(
-                                                labelText: 'Confirm Password',
+                                                labelText: l10n.confirmPassword,
                                                 prefixIcon: Icon(
                                                   Icons.lock_outline,
                                                   color: colorScheme.primary,
@@ -682,7 +691,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               validator: (value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
-                                                  return 'Please confirm your password';
+                                                  return l10n.required;
                                                 }
                                                 return null;
                                               },
@@ -751,9 +760,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                                                               ),
                                                         ),
                                                       )
-                                                    : const Text(
-                                                        'Create Account',
-                                                        style: TextStyle(
+                                                    : Text(
+                                                        l10n.signUp,
+                                                        style: const TextStyle(
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -768,7 +777,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  'Already have an account? ',
+                                                  l10n.alreadyHaveAccountQuestion,
                                                   style: theme
                                                       .textTheme
                                                       .bodyMedium
@@ -776,6 +785,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                                         color: Colors.grey[600],
                                                       ),
                                                 ),
+                                                const SizedBox(width: 4),
                                                 GestureDetector(
                                                   onTap: () {
                                                     Navigator.pushNamed(
@@ -784,7 +794,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                                     );
                                                   },
                                                   child: Text(
-                                                    'Sign In',
+                                                    l10n.signIn,
                                                     style: theme
                                                         .textTheme
                                                         .bodyMedium
@@ -821,4 +831,3 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 }
-

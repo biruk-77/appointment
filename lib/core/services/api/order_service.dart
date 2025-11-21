@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import '../network/api_client.dart';
 import '../../constants/api_constants.dart';
@@ -64,5 +64,35 @@ class OrderService {
     AppLogger.api('Fetching order details: $id');
     // Fixed: Use ApiConstants.orders instead of invalid orderById
     return await _apiClient.get('${ApiConstants.orders}/$id');
+  }
+
+  Future<Map<String, dynamic>> updateOrder({
+    required String orderId,
+    String? description,
+    int? dateCount,
+    String? date,
+    File? file,
+  }) async {
+    AppLogger.api('📝 Updating order: $orderId');
+
+    final formData = FormData.fromMap({
+      if (description != null) 'description': description,
+      if (dateCount != null) 'dateCount': dateCount,
+      if (date != null && date.isNotEmpty) 'date': date,
+    });
+
+    if (file != null) {
+      AppLogger.info('Attaching file to order update: ${file.path}');
+      formData.files.add(
+        MapEntry('file', await MultipartFile.fromFile(file.path)),
+      );
+    }
+
+    final response = await _apiClient.put(
+      '${ApiConstants.orders}/$orderId',
+      data: formData,
+    );
+    AppLogger.success('✅ Order updated successfully');
+    return response;
   }
 }

@@ -3,20 +3,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:dio/dio.dart';
 import './../../app_localizations.dart'; // ✅ Import Localization
 
 import '../../core/providers/theme_provider.dart';
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/api_provider.dart';
 import '../../core/utils/app_logger.dart';
-import '../../core/extensions/localization_extension.dart'; // Optional helper
+// Optional helper
 import 'widgets/service_grid.dart';
 import 'widgets/packages_grid.dart';
 import 'widgets/home_header.dart'; // Ensure this matches your file name
 import '../orders/orders_screen.dart';
 import '../profile/profile_screen.dart';
 import '../reservation/reservation_screen.dart';
+import 'browse_services_screen.dart';
 
 /// Home screen following WINDSURF AI Rules
 /// Provider-first theming, categorized services, appointment booking focus
@@ -34,8 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // Real API data state
   List<Map<String, dynamic>> _services = [];
   List<Map<String, dynamic>> _packages = [];
-  List<Map<String, dynamic>> _doctors = [];
-  List<Map<String, dynamic>> _hospitals = [];
+  final List<Map<String, dynamic>> _doctors = [];
+  final List<Map<String, dynamic>> _hospitals = [];
   bool _isLoadingData = true;
   String? _errorMessage;
 
@@ -974,13 +974,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildEmergencyFAB(ThemeProvider themeProvider, ColorScheme colors) {
     return FloatingActionButton(
       onPressed: () {
-        AppLogger.navigation('Quick book button pressed');
-        // TODO: Handle quick booking
-        // _showQuickBookDialog();
+        AppLogger.navigation('Browse services button pressed');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const BrowseServicesScreen()),
+        );
       },
       backgroundColor:
           themeProvider.accentColors['primary'], // This is the Green
-      foregroundColor: Colors.white, // <--- CHANGE THIS to Colors.white
+      foregroundColor: Colors.white,
       child: const Icon(Icons.add, size: 28),
     );
   }

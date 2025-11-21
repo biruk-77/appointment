@@ -36,9 +36,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appointmentDate => 'Appointment Date';
 
   @override
-  String get appointmentDetails => 'Appointment Details';
-
-  @override
   String get appointments => 'Appointments';
 
   @override
@@ -168,9 +165,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dontHaveAccount => 'Don\'t have an account?';
 
   @override
-  String get duration => 'Duration';
-
-  @override
   String get edit => 'Edit';
 
   @override
@@ -201,7 +195,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get failedToUpdateProfile => 'Failed to update profile';
 
   @override
-  String get featureComingSoonMessage => 'This feature is coming soon! We\'re working hard to bring you the best healthcare experience.';
+  String get featureComingSoonMessage =>
+      'This feature is coming soon! We\'re working hard to bring you the best healthcare experience.';
 
   @override
   String get filter => 'Filter';
@@ -219,7 +214,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get getHelpAndSupport => 'Get help and support';
 
   @override
-  String get goHospitalManagementSystem => 'Go Hospital Hospital Management System';
+  String get goHospitalManagementSystem =>
+      'Go Hospital Hospital Management System';
 
   @override
   String get guestUser => 'Guest User';
@@ -237,7 +233,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home => 'Home';
 
   @override
-  String get hubSubtitle => 'Making appointment booking simple, fast, and reliable for everyone ❤️';
+  String get hubSubtitle =>
+      'Making appointment booking simple, fast, and reliable for everyone ❤️';
 
   @override
   String get hubTitle => 'Pontiment - Your Appointment Hub 📅';
@@ -397,7 +394,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pay => 'Pay';
 
   @override
-  String get paymentFailed => 'Payment failed';
+  String get paymentFailed => 'Payment Failed';
 
   @override
   String get paymentMethod => 'Payment Method';
@@ -406,7 +403,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get payments => 'Payments';
 
   @override
-  String get paymentSuccessful => 'Payment successful';
+  String get paymentSuccessful => 'Payment Successful';
 
   @override
   String get pending => 'Pending';
@@ -442,7 +439,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileUpdatedSuccessfully => 'Profile updated successfully!';
 
   @override
-  String get promoBody => 'Browse and book appointments with trusted service providers. Your time is our priority!';
+  String get promoBody =>
+      'Browse and book appointments with trusted service providers. Your time is our priority!';
 
   @override
   String get promoTitle => 'Your Appointments Made Easy! 🚀';
@@ -481,16 +479,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reviews => 'Reviews';
 
   @override
-  String get revolutionizingHealthcare => 'Revolutionizing Healthcare in Ethiopia';
+  String get revolutionizingHealthcare =>
+      'Revolutionizing Healthcare in Ethiopia';
 
   @override
   String get save => 'Save';
 
   @override
-  String get scheduleSubtitle => 'Reserve your time slot with our trusted service providers';
+  String get scheduleSubtitle =>
+      'Reserve your time slot with our trusted service providers';
 
   @override
-  String get scheduleTitle => 'Schedule Your Appointment 📅';
+  String get scheduleTitle => 'Schedule Your Appointment ';
 
   @override
   String get search => 'Search';
@@ -535,7 +535,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOut => 'Sign Out';
 
   @override
-  String get signOutConfirmation => 'Are you sure you want to sign out of your account?';
+  String get signOutConfirmation =>
+      'Are you sure you want to sign out of your account?';
 
   @override
   String get signOutDescription => 'Sign out of your account';
@@ -601,7 +602,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get version => 'Version';
 
   @override
-  String get viewAndManageBookings => 'View and manage your appointments and reservations';
+  String get viewAndManageBookings =>
+      'View and manage your appointments and reservations';
 
   @override
   String get viewDetails => 'View Details';
@@ -657,4 +659,284 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get callSupportBtn => 'Call Support';
+
+  @override
+  String get orderId => 'Order ID';
+
+  @override
+  String get orderDescription => 'Order Description';
+
+  @override
+  String get selectPaymentMethod => 'Select Payment Method';
+
+  @override
+  String get showMore => 'Show More';
+
+  @override
+  String get showLess => 'Show Less';
+
+  @override
+  String get payNow => 'Pay Now';
+
+  @override
+  String get appointmentId => 'Appointment ID';
+
+  @override
+  String get dateTime => 'Date & Time';
+
+  @override
+  String get hospital => 'Hospital';
+
+  @override
+  String get customerInformation => 'Customer Information';
+
+  @override
+  String get phone => 'Phone';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get bookService => 'Book Service';
+
+  @override
+  String get bookPackage => 'Book Package';
+
+  @override
+  String get hospitalClinic => 'Hospital/Clinic';
+
+  @override
+  String get enterHospitalName => 'Enter hospital or clinic name';
+
+  @override
+  String get pleaseEnterHospitalName => 'Please enter hospital name';
+
+  @override
+  String get descriptionOptional => 'Description (Optional)';
+
+  @override
+  String get enterAppointmentDescription =>
+      'Enter appointment description or notes';
+
+  @override
+  String get duration => 'Duration (Days)';
+
+  @override
+  String get selectAppointmentDate => 'Select appointment date';
+
+  @override
+  String get selectAppointmentTime => 'Select appointment time';
+
+  @override
+  String get selectBothDateAndTime => 'Please select both date and time';
+
+  @override
+  String get authenticationRequired =>
+      'Authentication required to book appointments';
+
+  @override
+  String get uploadDocument => 'Upload Document (Optional)';
+
+  @override
+  String get tapToUploadFile => 'Tap to upload file';
+
+  @override
+  String get supportedFormats => 'PDF, DOC, DOCX, JPG, PNG';
+
+  @override
+  String get fileSelected => 'File selected';
+
+  @override
+  String get paymentDetails => 'Payment Details';
+
+  @override
+  String get reservationDetails => 'Reservation Details';
+
+  @override
+  String reservationNumber(Object id) {
+    return 'Reservation #$id';
+  }
+
+  @override
+  String get serviceInformation => 'Service Information';
+
+  @override
+  String get reservationDates => 'Reservation Dates';
+
+  @override
+  String get reservationDate => 'Reservation Date';
+
+  @override
+  String get startDate => 'Start Date';
+
+  @override
+  String get endDate => 'End Date';
+
+  @override
+  String get day => 'day';
+
+  @override
+  String get days => 'days';
+
+  @override
+  String get noServicesAvailable => 'No services available';
+
+  @override
+  String get noPackagesAvailable => 'No packages available';
+
+  @override
+  String get browseServices => 'Browse Services';
+
+  @override
+  String get appointmentDetails => 'Appointment Details';
+
+  @override
+  String get hospitalInformation => 'Hospital Information';
+
+  @override
+  String get appointmentDateTime => 'Appointment Date & Time';
+
+  @override
+  String get scheduledFor => 'Scheduled For';
+
+  @override
+  String get timeline => 'Timeline';
+
+  @override
+  String get created => 'Created';
+
+  @override
+  String get lastUpdated => 'Last Updated';
+
+  @override
+  String get paymentHistory => 'Payment History';
+
+  @override
+  String get paymentStatus => 'Payment Status';
+
+  @override
+  String get paymentAmount => 'Amount';
+
+  @override
+  String get paymentDate => 'Payment Date';
+
+  @override
+  String get transactionId => 'Transaction ID';
+
+  @override
+  String get noPaymentsYet => 'No payments yet';
+
+  @override
+  String get paymentPending => 'Payment Pending';
+
+  @override
+  String get viewPaymentDetails => 'View Payment Details';
+
+  @override
+  String get downloadReceipt => 'Download Receipt';
+
+  @override
+  String get printReceipt => 'Print Receipt';
+
+  @override
+  String get cancelledAppointments => 'Cancelled Appointments';
+
+  @override
+  String get allAppointments => 'All Appointments';
+
+  @override
+  String get noAppointmentsFound => 'No appointments found';
+
+  @override
+  String get noReservationsFound => 'No reservations found';
+
+  @override
+  String get tapToViewDetails => 'Tap to view details ';
+
+  @override
+  String get welcomeBack => 'Welcome Back';
+
+  @override
+  String get signInToAccount => 'Sign in to your account';
+
+  @override
+  String get emailAddress => 'Email Address';
+
+  @override
+  String get dontHaveAccountQuestion => 'Don\'t have an account?';
+
+  @override
+  String get createAccountTitle => 'Create Account';
+
+  @override
+  String get joinGoHospital => 'Join Go Hospital today';
+
+  @override
+  String get fullName => 'Full Name';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get alreadyHaveAccountQuestion => 'Already have an account?';
+
+  @override
+  String get signInLink => 'Sign In';
+
+  @override
+  String get toggleTheme => 'Toggle Theme';
+
+  @override
+  String get changeLanguage => 'Change Language';
+
+  @override
+  String get verify => 'Verify';
+
+  @override
+  String get verifyPayment => 'Verify Payment';
+
+  @override
+  String get numberOfDays => 'Number of Days';
+
+  @override
+  String get attachment => 'Attachment';
+
+  @override
+  String get changeFile => 'Change File';
+
+  @override
+  String get noFileSelected => 'No file selected';
+
+  @override
+  String get pickFile => 'Pick File';
+
+  @override
+  String get updating => 'Updating...';
+
+  @override
+  String get updateOrder => 'Update Order';
+
+  @override
+  String get orderUpdatedSuccessfully => 'Order updated successfully!';
+
+  @override
+  String get paymentVerifiedSuccessfully => 'Payment verified successfully!';
+
+  @override
+  String get noPaymentHistoryFound => 'No payment history found';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get paymentInformation => 'Payment Information';
+
+  @override
+  String get referenceNumber => 'Reference Number';
+
+  @override
+  String get service => 'Service';
 }

@@ -1,18 +1,5 @@
 {
   "am": [
-    "appointmentsAndReservations",
-    "noAppointmentsYet",
-    "noReservationsYet",
-    "reservations",
-    "viewAndManageBookings",
-    "yourBookings"
-  ],
-
-  "so": [
-    "bookNow",
-    "defaultPackageName",
-    "healthPackages",
-    "healthPackagesSubtitle",
-    "moreItems"
+    "welcomeBack"
   ]
 }

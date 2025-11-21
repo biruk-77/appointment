@@ -63,7 +63,8 @@ import 'app_localizations_so.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,7 +72,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -83,18 +85,19 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('am'),
     Locale('en'),
-    Locale('so')
+    Locale('so'),
   ];
 
   /// No description provided for @about.
@@ -150,12 +153,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Appointment Date'**
   String get appointmentDate;
-
-  /// No description provided for @appointmentDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Appointment Details'**
-  String get appointmentDetails;
 
   /// No description provided for @appointments.
   ///
@@ -414,12 +411,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t have an account?'**
   String get dontHaveAccount;
-
-  /// No description provided for @duration.
-  ///
-  /// In en, this message translates to:
-  /// **'Duration'**
-  String get duration;
 
   /// No description provided for @edit.
   ///
@@ -868,7 +859,7 @@ abstract class AppLocalizations {
   /// No description provided for @paymentFailed.
   ///
   /// In en, this message translates to:
-  /// **'Payment failed'**
+  /// **'Payment Failed'**
   String get paymentFailed;
 
   /// No description provided for @paymentMethod.
@@ -886,7 +877,7 @@ abstract class AppLocalizations {
   /// No description provided for @paymentSuccessful.
   ///
   /// In en, this message translates to:
-  /// **'Payment successful'**
+  /// **'Payment Successful'**
   String get paymentSuccessful;
 
   /// No description provided for @pending.
@@ -1054,7 +1045,7 @@ abstract class AppLocalizations {
   /// No description provided for @scheduleTitle.
   ///
   /// In en, this message translates to:
-  /// **'Schedule Your Appointment 📅'**
+  /// **'Schedule Your Appointment '**
   String get scheduleTitle;
 
   /// No description provided for @search.
@@ -1380,9 +1371,562 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Call Support'**
   String get callSupportBtn;
+
+  /// No description provided for @orderId.
+  ///
+  /// In en, this message translates to:
+  /// **'Order ID'**
+  String get orderId;
+
+  /// No description provided for @orderDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Description'**
+  String get orderDescription;
+
+  /// No description provided for @selectPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Payment Method'**
+  String get selectPaymentMethod;
+
+  /// No description provided for @showMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show More'**
+  String get showMore;
+
+  /// No description provided for @showLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Less'**
+  String get showLess;
+
+  /// No description provided for @payNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay Now'**
+  String get payNow;
+
+  /// No description provided for @appointmentId.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment ID'**
+  String get appointmentId;
+
+  /// No description provided for @dateTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & Time'**
+  String get dateTime;
+
+  /// No description provided for @hospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital'**
+  String get hospital;
+
+  /// No description provided for @customerInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Information'**
+  String get customerInformation;
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phone;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @bookService.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Service'**
+  String get bookService;
+
+  /// No description provided for @bookPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Package'**
+  String get bookPackage;
+
+  /// No description provided for @hospitalClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital/Clinic'**
+  String get hospitalClinic;
+
+  /// No description provided for @enterHospitalName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter hospital or clinic name'**
+  String get enterHospitalName;
+
+  /// No description provided for @pleaseEnterHospitalName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter hospital name'**
+  String get pleaseEnterHospitalName;
+
+  /// No description provided for @descriptionOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (Optional)'**
+  String get descriptionOptional;
+
+  /// No description provided for @enterAppointmentDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter appointment description or notes'**
+  String get enterAppointmentDescription;
+
+  /// No description provided for @duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration (Days)'**
+  String get duration;
+
+  /// No description provided for @selectAppointmentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select appointment date'**
+  String get selectAppointmentDate;
+
+  /// No description provided for @selectAppointmentTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Select appointment time'**
+  String get selectAppointmentTime;
+
+  /// No description provided for @selectBothDateAndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select both date and time'**
+  String get selectBothDateAndTime;
+
+  /// No description provided for @authenticationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication required to book appointments'**
+  String get authenticationRequired;
+
+  /// No description provided for @uploadDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Document (Optional)'**
+  String get uploadDocument;
+
+  /// No description provided for @tapToUploadFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to upload file'**
+  String get tapToUploadFile;
+
+  /// No description provided for @supportedFormats.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF, DOC, DOCX, JPG, PNG'**
+  String get supportedFormats;
+
+  /// No description provided for @fileSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'File selected'**
+  String get fileSelected;
+
+  /// No description provided for @paymentDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Details'**
+  String get paymentDetails;
+
+  /// No description provided for @reservationDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservation Details'**
+  String get reservationDetails;
+
+  /// No description provided for @reservationNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservation #{id}'**
+  String reservationNumber(Object id);
+
+  /// No description provided for @serviceInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Information'**
+  String get serviceInformation;
+
+  /// No description provided for @reservationDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservation Dates'**
+  String get reservationDates;
+
+  /// No description provided for @reservationDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservation Date'**
+  String get reservationDate;
+
+  /// No description provided for @startDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get startDate;
+
+  /// No description provided for @endDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get endDate;
+
+  /// No description provided for @day.
+  ///
+  /// In en, this message translates to:
+  /// **'day'**
+  String get day;
+
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get days;
+
+  /// No description provided for @noServicesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No services available'**
+  String get noServicesAvailable;
+
+  /// No description provided for @noPackagesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No packages available'**
+  String get noPackagesAvailable;
+
+  /// No description provided for @browseServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Services'**
+  String get browseServices;
+
+  /// No description provided for @appointmentDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment Details'**
+  String get appointmentDetails;
+
+  /// No description provided for @hospitalInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital Information'**
+  String get hospitalInformation;
+
+  /// No description provided for @appointmentDateTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment Date & Time'**
+  String get appointmentDateTime;
+
+  /// No description provided for @scheduledFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled For'**
+  String get scheduledFor;
+
+  /// No description provided for @timeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeline'**
+  String get timeline;
+
+  /// No description provided for @created.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get created;
+
+  /// No description provided for @lastUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated'**
+  String get lastUpdated;
+
+  /// No description provided for @paymentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment History'**
+  String get paymentHistory;
+
+  /// No description provided for @paymentStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Status'**
+  String get paymentStatus;
+
+  /// No description provided for @paymentAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get paymentAmount;
+
+  /// No description provided for @paymentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Date'**
+  String get paymentDate;
+
+  /// No description provided for @transactionId.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction ID'**
+  String get transactionId;
+
+  /// No description provided for @noPaymentsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No payments yet'**
+  String get noPaymentsYet;
+
+  /// No description provided for @paymentPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Pending'**
+  String get paymentPending;
+
+  /// No description provided for @viewPaymentDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View Payment Details'**
+  String get viewPaymentDetails;
+
+  /// No description provided for @downloadReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Receipt'**
+  String get downloadReceipt;
+
+  /// No description provided for @printReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Print Receipt'**
+  String get printReceipt;
+
+  /// No description provided for @cancelledAppointments.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled Appointments'**
+  String get cancelledAppointments;
+
+  /// No description provided for @allAppointments.
+  ///
+  /// In en, this message translates to:
+  /// **'All Appointments'**
+  String get allAppointments;
+
+  /// No description provided for @noAppointmentsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No appointments found'**
+  String get noAppointmentsFound;
+
+  /// No description provided for @noReservationsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No reservations found'**
+  String get noReservationsFound;
+
+  /// No description provided for @tapToViewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to view details '**
+  String get tapToViewDetails;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get welcomeBack;
+
+  /// No description provided for @signInToAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to your account'**
+  String get signInToAccount;
+
+  /// No description provided for @emailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get emailAddress;
+
+  /// No description provided for @dontHaveAccountQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get dontHaveAccountQuestion;
+
+  /// No description provided for @createAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccountTitle;
+
+  /// No description provided for @joinGoHospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Go Hospital today'**
+  String get joinGoHospital;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullName;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @alreadyHaveAccountQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get alreadyHaveAccountQuestion;
+
+  /// No description provided for @signInLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get signInLink;
+
+  /// No description provided for @toggleTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle Theme'**
+  String get toggleTheme;
+
+  /// No description provided for @changeLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Language'**
+  String get changeLanguage;
+
+  /// No description provided for @verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get verify;
+
+  /// No description provided for @verifyPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Payment'**
+  String get verifyPayment;
+
+  /// No description provided for @numberOfDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Days'**
+  String get numberOfDays;
+
+  /// No description provided for @attachment.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment'**
+  String get attachment;
+
+  /// No description provided for @changeFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Change File'**
+  String get changeFile;
+
+  /// No description provided for @noFileSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'No file selected'**
+  String get noFileSelected;
+
+  /// No description provided for @pickFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick File'**
+  String get pickFile;
+
+  /// No description provided for @updating.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating...'**
+  String get updating;
+
+  /// No description provided for @updateOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Order'**
+  String get updateOrder;
+
+  /// No description provided for @orderUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order updated successfully!'**
+  String get orderUpdatedSuccessfully;
+
+  /// No description provided for @paymentVerifiedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment verified successfully!'**
+  String get paymentVerifiedSuccessfully;
+
+  /// No description provided for @noPaymentHistoryFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment history found'**
+  String get noPaymentHistoryFound;
+
+  /// No description provided for @refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
+  /// No description provided for @paymentInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Information'**
+  String get paymentInformation;
+
+  /// No description provided for @referenceNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference Number'**
+  String get referenceNumber;
+
+  /// No description provided for @service.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get service;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -1391,26 +1935,28 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['am', 'en', 'so'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['am', 'en', 'so'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'am': return AppLocalizationsAm();
-    case 'en': return AppLocalizationsEn();
-    case 'so': return AppLocalizationsSo();
+    case 'am':
+      return AppLocalizationsAm();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'so':
+      return AppLocalizationsSo();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }
